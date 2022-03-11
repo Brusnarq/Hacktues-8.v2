@@ -1,15 +1,23 @@
 import ursina
 from menu_screen import MenuScreen
 from player import Player
+from ursina.prefabs.first_person_controller import *
 
 app = ursina.Ursina()
 
+
 def update():
-    if ursina.held_keys['escape']:
-        menu = MenuScreen()
+    pass
+
 
 def main():
-    player = Player(ursina.Vec3(0,1,0))
+    # EditorCamera()
+    terrain = ursina.Entity(model=ursina.Terrain(heightmap='assets/maps/map3.png', skip=36),
+                            scale=(200, 60, 200), texture='assets/maps/map3.png', collider='mesh')
+    #Sky()
+    Sky(texture='assets/textures/sky.png')
+
+    player = Player(ursina.Vec3(0, 70, 0))
     app.run()
 
 

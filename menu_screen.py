@@ -7,15 +7,17 @@ class Option(ursina.Button):
             color=ursina.color.gray,
             scale=0.25,
             text=button_text,
-            text_origin=(-.5, 0)
+            text_origin=(0, 0)
         )
 
+    def on_click(self):
+        pass
 
 class MenuScreen(ursina.Entity):
     def __init__(self):
+        super().__init__(
+           parent = ursina.camera.ui 
+        )
         global play_button
         play_button = Option('Play')
-        if  play_button.on_click():
-            ursina.destroy(self)
-    
-
+        
