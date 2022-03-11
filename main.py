@@ -1,10 +1,10 @@
 from ursina import *
-from hot_bar import HotBar, Item
+from hot_bar import HotBar, CurrentItem
 
 
 if __name__ == '__main__':
     app = Ursina()
     hotbar = HotBar()
-    item = Item()
+    item = CurrentItem()
     app.run()
     
