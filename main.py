@@ -1,9 +1,10 @@
 from ursina import *
-from hot_bar import HotBar
+from hotbar import Hotbar
 from player import Player
 
 
 def input(key):
+    
     if key == 'escape':
         quit()
 
@@ -16,10 +17,10 @@ if __name__ == '__main__':
         scale = 20,
         texture = 'white_cube',
         texture_scale = ( 20, 20, 20 ),
-        collider = 'mesh'
+        collider = 'mesh',
     )
 
-    hotbar = HotBar()
+    hotbar = Hotbar()
     player = Player(position = ( 0, 10, 0 ))
 
     app.run()

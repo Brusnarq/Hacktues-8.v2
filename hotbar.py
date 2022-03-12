@@ -1,7 +1,7 @@
 from ursina import *
 
 
-class HotBar(Entity):
+class Hotbar(Entity):
     
     def __init__(self):
         super().__init__(
@@ -11,5 +11,5 @@ class HotBar(Entity):
             position =  Vec2( 0, -.465 ),
             texture = 'white_cube',
             texture_scale = ( 9, 1 ),
-            color = color.rgb(239, 110, 167)
+            color = color.rgb( 239, 110, 167 )
         )
