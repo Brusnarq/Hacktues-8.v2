@@ -11,4 +11,3 @@ class Plant(Entity):
             rotation=rotation,
             collider='mesh',
         )
-

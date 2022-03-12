@@ -1,6 +1,6 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import *
-from player_v2 import Player
+from player import Player
 from plant import Plant
 from hotbar import Hotbar
 import random
