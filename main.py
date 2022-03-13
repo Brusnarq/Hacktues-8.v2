@@ -1,6 +1,6 @@
 from ursina import *
-from hotbar import Hotbar
-from player import Player
+from fuel_tank import FuelTank
+from player import Player, win
 
 
 def input(key):
@@ -20,8 +20,9 @@ if __name__ == '__main__':
         collider = 'mesh',
     )
 
-    hotbar = Hotbar()
-    player = Player(position = ( 0, 10, 0 ))
+    player = Player(position = ( 0, 20, 0 ))
+    fuel = FuelTank()
+    # if win == 1:
 
     app.run()
     
