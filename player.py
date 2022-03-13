@@ -1,10 +1,12 @@
+from numpy import full
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from random import *
 from hotbar import Hotbar
 from item_position import item_pos_to_coords
 from items_in_slots import SlotPngRender
-
+from grisho import Grisho
+from plant_generation import flower_type_to_png, generate_flowers
 
 hot_bar_keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 all_2d_flowers = ['assets/textures/toxic_flower.png',
@@ -12,6 +14,8 @@ all_2d_flowers = ['assets/textures/toxic_flower.png',
 hotbar = ['0', '0', '0', '0', '0', '0', '0', '0', '0']
 item_position_in_hotbar = 1
 items_needed_to_fill = 0
+full = 0
+made_change = 0
 win = 0
 
 
@@ -20,14 +24,13 @@ class Fuel(Entity):
         super().__init__(
             parent=camera.ui,
             model='quad',
-            scale=(.00885, .03),
-            position=Vec2(-.746 + items_needed_to_fill * .00885, .3727),
+            scale=(.00885, .032),
+            position=Vec2(-.739 + items_needed_to_fill * .00885, .3727),
             color=color.lime
         )
 
 
 class CurrentItemSlot(Entity):
-
     def __init__(self):
         super().__init__(
             parent=camera.ui,
@@ -88,11 +91,11 @@ class Player(Entity):
         self.current_item_slot = CurrentItemSlot()
         self.txt = Text(text=f'{self.controller.position}', x=-.88, y=.5)
         self.png_list = []
+        self.grisho = Grisho()
+        self.flower_list = generate_flowers(5)
 
     def switch_item(self):
-
         for i, v in enumerate(self.all_3d_flowers):
-
             if i == self.current_3d_item:
                 v.visible = True
             else:
@@ -103,24 +106,35 @@ class Player(Entity):
         global items_needed_to_fill
 
         if key == 'e':
-            self.finding_slot_in_hotbar(choice(all_2d_flowers))
-            self.current_3d_item = all_2d_flowers.index(
-                hotbar[item_position_in_hotbar - 1])
-            self.switch_item()
+            for flower in self.flower_list:
+                if (flower.position.x - 1.2) <= self.controller.x <= (flower.position.x + 1.2) and (flower.position.z - 1.2) <= self.controller.z <= (flower.position.z + 1.2):
+                    self.finding_slot_in_hotbar(flower_type_to_png(flower))
+                    self.current_3d_item = all_2d_flowers.index(
+                        hotbar[item_position_in_hotbar - 1])
+                    if made_change:
+                        pickup_sound = Audio('assets/sounds/pickup.wav', volume=0.5)
+                        pickup_sound.play()
+                        self.flower_list.pop(self.flower_list.index(flower))
+                        destroy(flower)
+                        self.switch_item()
 
         if key == 'q':
-            for i in range(len(hotbar)):
-                if hotbar[i - 1] != '0':
-                    items_needed_to_fill += 1
-                    destroy(self.png_list[0])
-                    self.png_list.pop(0)
-                    hotbar[i - 1] = '0'
-                    fill = Fuel()
-            destroy(self.hotbar_render)
-            destroy(self.current_item_slot)
-            self.hotbar_render = Hotbar()
-            self.current_item_slot = CurrentItemSlot()
-            self.png_list = []
+            if (self.grisho.x - 3) <= self.controller.x <= (self.grisho.x + 3) and (self.grisho.z - 3) <= self.controller.z <= (self.grisho.z + 3):
+                drop_sound = Audio('assets/sounds/drop.wav', volume=0.5)
+                drop_sound.play()
+                for i in range(len(hotbar)):
+                    if hotbar[i - 1] != '0':
+                        items_needed_to_fill += 1
+                        destroy(self.png_list[0])
+                        self.png_list.pop(0)
+                        hotbar[i - 1] = '0'
+                        fill = Fuel()
+                destroy(self.hotbar_render)
+                destroy(self.current_item_slot)
+                self.hotbar_render = Hotbar()
+                self.current_item_slot = CurrentItemSlot()
+                self.png_list = []
+                self.all_3d_flowers[self.current_3d_item].visible = False
 
         if key in hot_bar_keys:
             item_position_in_hotbar = int(key)
@@ -180,7 +194,7 @@ class Player(Entity):
 
         self.controller.camera_pivot.y = 2 - held_keys['left control']
         if self.controller.position.y < 5:
-                self.controller.position = Vec3(-56, 12, -66)
+            self.controller.position = Vec3(-56, 12, -66)
         self.txt.text = f'x: {int(self.controller.position.x)} y: {self.controller.position.y} z: {int(self.controller.position.z)}'
         if items_needed_to_fill >= 20:
             win = 1
@@ -188,6 +202,8 @@ class Player(Entity):
     def finding_slot_in_hotbar(self, current_2d_flower):
         global item_position_in_hotbar
         global hotbar
+        global made_change
+        global full
 
         if hotbar[item_position_in_hotbar - 1] == '0':
             hotbar[item_position_in_hotbar - 1] = current_2d_flower
@@ -225,5 +241,6 @@ class Player(Entity):
         if current_2d_flower == 'assets/textures/purple_flower.png':
             scale_ = (.16, .087)
 
-        self.png = SlotPngRender(scale_, current_2d_flower, item_position_in_hotbar)
+        self.png = SlotPngRender(
+            scale_, current_2d_flower, item_position_in_hotbar)
         self.png_list.append(self.png)
