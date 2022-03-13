@@ -1,3 +1,6 @@
+import tkinter as tk
+import PIL.Image
+import PIL.ImageTk
 from ursina import *
 from ursina.prefabs.first_person_controller import *
 from player import Player
@@ -18,10 +21,6 @@ player = Player(position=Vec3(-56, 12, -66),
                 gravity=0.3)
 hotbar = Hotbar()
 txt = Text(text=f'{player.controller.position}', x=-.88, y=.5)
-
-
-def input(key):
-    pass
 
 
 def update():
@@ -57,7 +56,7 @@ def generate_plants(num):
         random_model = random.choice(flower_list)
         random_texture = random_model
         area1 = []
-        area1.append(Plant(position=Vec3(random.uniform(82, 89), random.uniform(9.2, 9.29), random.uniform(86, 98)),
+        area1.append(Plant(position=Vec3(random.uniform(82, 97), random.uniform(9.2, 9.29), random.uniform(86, 98)),
                            scale=(.3, .3, .3),
                            model=random_model, texture=random_texture, rotation=Vec3(0, random.uniform(0, 10), 0), ptype=get_plant_type(random_model)))
         # generation area 2
@@ -85,7 +84,7 @@ def generate_plants(num):
     for i in range(2):
         random_model = random.choice(tree_list)
         random_texture = random_model
-        area1.append(Plant(position=Vec3(random.uniform(82, 89), random.uniform(9.2, 9.29), random.uniform(86, 98)),
+        area1.append(Plant(position=Vec3(random.uniform(82, 87), random.uniform(9.2, 9.29), random.uniform(86, 98)),
                            scale=(3, 3, 3),
                            model=random_model, texture=random_texture, rotation=Vec3(0, random.uniform(0, 10), 0), ptype=get_plant_type(random_model))
                      )
@@ -130,9 +129,17 @@ def generate_level():
 
 
 def main():
+    EditorCamera()
     generate_level()
     app.run()
 
 
 if __name__ == '__main__':
-    main()
+    launcher = tk.Tk()
+    launcher.geometry('350x165')
+    logo_img = PIL.Image.open('assets/textures/logo.png')
+    logo = PIL.ImageTk.PhotoImage(logo_img)
+    logo_label  = tk.Label(image=logo).pack()
+    play = tk.Button(text='Play', command=main).pack()
+    quit = tk.Button(text='Quit', command=launcher.destroy).pack()
+    launcher.mainloop()
