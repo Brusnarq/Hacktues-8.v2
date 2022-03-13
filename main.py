@@ -1,11 +1,13 @@
-import tkinter as tk
+import tkinter
+from tkinter import ttk
 import PIL.Image
 import PIL.ImageTk
 from ursina import *
 from ursina.prefabs.first_person_controller import *
-from player import Player
+from player import Player, win
 from plant import Plant
 from hotbar import Hotbar
+from fuel_tank import FuelTank
 import random
 # from menu_screen import MenuScreen
 # from ursina.shaders import lit_with_shadows_shader
@@ -19,14 +21,8 @@ player = Player(position=Vec3(-56, 12, -66),
                 collider='sphere',
                 speed=20,
                 gravity=0.3)
+fuel = FuelTank()
 hotbar = Hotbar()
-txt = Text(text=f'{player.controller.position}', x=-.88, y=.5)
-
-
-def update():
-    if player.controller.y < 5:
-        player.controller.position = Vec3(-56, 12, -66)
-    txt.text = f'x: {int(player.controller.x)} y: {int(player.controller.y)} z: {int(player.controller.z)}'
 
 
 def get_plant_type(plant_model):
@@ -81,28 +77,25 @@ def generate_plants(num):
                            scale=(.3, .3, .3),
                            model=random_model, texture=random_texture, rotation=Vec3(0, random.uniform(0, 10), 0), ptype=get_plant_type(random_model)))
 
-    for i in range(2):
+    for i in range(3):
         random_model = random.choice(tree_list)
         random_texture = random_model
         area1.append(Plant(position=Vec3(random.uniform(82, 87), random.uniform(9.2, 9.29), random.uniform(86, 98)),
                            scale=(3, 3, 3),
                            model=random_model, texture=random_texture, rotation=Vec3(0, random.uniform(0, 10), 0), ptype=get_plant_type(random_model))
                      )
-    for i in range(2):
         random_model = random.choice(tree_list)
         random_texture = random_model
         area2.append(Plant(position=Vec3(random.uniform(61, 72), random.uniform(9.2, 9.29), random.uniform(24, 50)),
                            scale=(3, 3, 3),
                            model=random_model, texture=random_texture, rotation=Vec3(0, random.uniform(0, 10), 0), ptype=get_plant_type(random_model))
                      )
-    for i in range(2):
         random_model = random.choice(tree_list)
         random_texture = random_model
         area3.append(Plant(position=Vec3(random.uniform(-61, -79), random.uniform(9.08, 9.17), random.uniform(40, 50)),
                            scale=(3, 3, 3),
                            model=random_model, texture=random_texture, rotation=Vec3(0, random.uniform(0, 10), 0), ptype=get_plant_type(random_model))
                      )
-    for i in range(2):
         random_model = random.choice(tree_list)
         random_texture = random_model
         area4.append(Plant(position=Vec3(random.uniform(-2, -11), random.uniform(9.07, 9.3), random.uniform(46, 60)),
@@ -114,7 +107,7 @@ def generate_plants(num):
 def generate_level():
     terrain = Entity(model=Terrain(heightmap='assets/maps/map3.png', skip=36),
                      scale=(200, 60, 200), texture='assets/maps/map3.png', collider='mesh')
-    generate_plants(2)
+    generate_plants(4)
     #grigor = Entity(position=Vec3(0, 15, 0), model='assets/grisho/grisho', texture='assets/grisho/grisho', scale=(1, 1, 1), collider='mesh')
     rocket = Entity(model='assets/rocket/rocket_v2', texture='assets/rocket/rocket_v2',
                     position=Vec3(0, 20, 0), collider='mesh', scale=(1, 1, 1))
@@ -129,17 +122,21 @@ def generate_level():
 
 
 def main():
-    EditorCamera()
+    # EditorCamera()
     generate_level()
     app.run()
 
 
 if __name__ == '__main__':
-    launcher = tk.Tk()
+    launcher = tkinter.Tk()
     launcher.geometry('350x165')
+    launcher.wm_title("Last Chance Launcher")
+    launcher.iconbitmap('assets/textures/icon.ico')
+    style = ttk.Style()
+    style.configure("BW.TLabel", foreground="black", background="white")
     logo_img = PIL.Image.open('assets/textures/logo.png')
     logo = PIL.ImageTk.PhotoImage(logo_img)
-    logo_label  = tk.Label(image=logo).pack()
-    play = tk.Button(text='Play', command=main).pack()
-    quit = tk.Button(text='Quit', command=launcher.destroy).pack()
+    logo_label = ttk.Label(image=logo, style='BW.TLabel').pack()
+    play = ttk.Button(text='Play', command=main).pack()
+    quit = ttk.Button(text='Quit', command=launcher.destroy).pack()
     launcher.mainloop()
