@@ -4,6 +4,7 @@ from random import *
 from hotbar import Hotbar
 from item_position import ItemPositionToCoordinates
 from items_in_slots import SlotPngRender
+from grishata import Grisho
 
 
 hot_bar_keys = [ '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
@@ -87,6 +88,7 @@ class Player(Entity):
         self.current_item_slot = CurrentItemSlot()
         self.txt = Text(text=f'{self.controller.position}', x=-.88, y=.5)
         self.png_list = []
+        self.grisho = Grisho()
 
 
     def SwitchItem(self):
@@ -109,18 +111,20 @@ class Player(Entity):
             self.SwitchItem()
 
         if key == 'q':
-            for i in range(len(hotbar)):
-                if hotbar[i - 1] != '0':
-                    items_needed_to_fill += 1
-                    destroy(self.png_list[0])
-                    self.png_list.pop(0)
-                    hotbar[i - 1] = '0'
-                    fill = Fuel()
-            destroy(self.hotbar_render)
-            destroy(self.current_item_slot)
-            self.hotbar_render = Hotbar()
-            self.current_item_slot = CurrentItemSlot()
-            self.png_list = []
+            if (self.grisho.x - 3) <= self.controller.x <= (self.grisho.x + 3) and (self.grisho.z - 3) <= self.controller.z <= (self.grisho.z + 3):
+                for i in range(len(hotbar)):
+                    if hotbar[i - 1] != '0':
+                        items_needed_to_fill += 1
+                        destroy(self.png_list[0])
+                        self.png_list.pop(0)
+                        hotbar[i - 1] = '0'
+                        fill = Fuel()
+                destroy(self.hotbar_render)
+                destroy(self.current_item_slot)
+                self.hotbar_render = Hotbar()
+                self.current_item_slot = CurrentItemSlot()
+                self.png_list = []
+                self.all_3d_flowers[self.current_3d_item].visible = False
 
         if key in hot_bar_keys:
             item_position_in_hotbar = int(key)
