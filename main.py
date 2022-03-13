@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import ttk
+import tkvideo 
 import PIL.Image
 import PIL.ImageTk
 from ursina import *
@@ -14,6 +15,7 @@ import random
 # from ursina.shaders import lit_with_shadows_shader
 
 window.vsync = False
+window.title = 'Last Chance'
 app = Ursina()
 player = Player(position=Vec3(-56, 12, -66),
                 jump_height=2.5,
@@ -46,6 +48,9 @@ def generate_level():
 def main():
     # EditorCamera()
     generate_level()
+    if win:
+        Text('Fuel refilled. Game finale')
+        return 
     app.run()
 
 

@@ -92,7 +92,7 @@ class Player(Entity):
         self.txt = Text(text=f'{self.controller.position}', x=-.88, y=.5)
         self.png_list = []
         self.grisho = Grisho()
-        self.flower_list = generate_flowers(5)
+        self.flower_list = generate_flowers(6)
 
     def switch_item(self):
         for i, v in enumerate(self.all_3d_flowers):
