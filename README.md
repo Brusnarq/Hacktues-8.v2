@@ -7,4 +7,5 @@ Last chance е 3D игра, в която играеш като космонав
 
 ```bash
 pip install ursina
+pip install tkvideo
 ```
